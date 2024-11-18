@@ -8,18 +8,22 @@ import pandas as pd
 def get_average_spending(industry):
     # Placeholder values; replace with actual data fetching
     industry_spending = {
-        'Fitness Center': 600,  # Average annual spending per customer
-        'Coffee Shop': 400,
-        # Add more industries
+        'Fitness Center': 50,  # Monthly spending per customer
+        'Coffee Shop': 35,     # Average $35/month per customer
+        'Restaurant': 45,
+        'Retail Store': 40,
+        'Beauty Salon': 60
     }
-    return industry_spending.get(industry, 500)  # Default value
+    return industry_spending.get(industry, 40)
 
 def get_industry_interest_rate(industry):
     # Placeholder values
     interest_rates = {
-        'Fitness Center': 0.2,  # 20% of the population
-        'Coffee Shop': 0.5,
-        # Add more industries
+        'Fitness Center': 0.05,  # 5% of population
+        'Coffee Shop': 0.15,     # 15% of population
+        'Restaurant': 0.10,
+        'Retail Store': 0.08,
+        'Beauty Salon': 0.06
     }
     return interest_rates.get(industry, 0.3)  # Default value
 
@@ -39,11 +43,13 @@ def estimate_annual_revenue(business_idea, location, competitors):
 
 def estimate_startup_costs(business_idea):
     startup_costs = {
-        'Fitness Center': 500000,
-        'Coffee Shop': 150000,
-        # Add more industries
+        'Fitness Center': 250000,
+        'Coffee Shop': 80000,
+        'Restaurant': 120000,
+        'Retail Store': 100000,
+        'Beauty Salon': 60000
     }
-    return startup_costs.get(business_idea, 100000)  # Default value
+    return startup_costs.get(business_idea, 75000)
 
 def estimate_operational_expenses(business_idea, location):
     expenses = {
