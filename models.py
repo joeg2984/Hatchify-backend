@@ -1,4 +1,3 @@
-# backend/models.py
 from db import Base
 from sqlalchemy import Column, Integer, String, Text
 
@@ -21,4 +20,4 @@ class Evaluation(Base):
     rating = Column(String, nullable=False)
     explanation = Column(String, nullable=False)
     action_plan = Column(Text, nullable=True)
-    # Add other fields as necessary
+

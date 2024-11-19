@@ -224,11 +224,11 @@ async def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
         known_locations = get_known_locations(db)
         known_business_ideas = get_known_business_ideas(db)
 
-            # Step 1: Fuzzy match and correct the location
+
         corrected_location = correct_input(location, known_locations, threshold=80)
 
         if not corrected_location:
-                # Geocode the new location
+
                 geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={location}&key={settings.google_maps_api_key}"
                 logging.info(f"Attempting geocoding for new location: {location}")
                 try:
@@ -243,12 +243,12 @@ async def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
                     logging.error(f"Geocoding API error: {geocode_data.get('status')}")
                     raise HTTPException(status_code=400, detail='Invalid location provided.')
 
-                # Extract geocode
+
                 lat = geocode_data['results'][0]['geometry']['location']['lat']
                 lng = geocode_data['results'][0]['geometry']['location']['lng']
                 geo_code = f"{lat},{lng}"
 
-                # Add new location with geo_code
+
                 new_location = Location(name=location, geo_code=geo_code)
                 db.add(new_location)
                 db.commit()
@@ -259,12 +259,12 @@ async def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
                 new_location_added = False
                 logging.info(f"Location correction: {location} -> {corrected_location}")
 
-            # Step 2: Fuzzy match and correct the business idea
+
         corrected_business_idea = correct_input(
                 business_idea, known_business_ideas, threshold=80
             )
         if not corrected_business_idea:
-                # Optionally add new business idea
+
                 new_business_idea = BusinessIdea(name=business_idea)
                 db.add(new_business_idea)
                 db.commit()
@@ -277,7 +277,7 @@ async def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
                     f"Business idea correction: {business_idea} -> {corrected_business_idea}"
                 )
 
-            # Step 3: Geocode the corrected location to get latitude and longitude
+
         geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={corrected_location}&key={settings.google_maps_api_key}"
         logging.info(f"Attempting geocoding for location: {corrected_location}")
         try:
@@ -298,7 +298,7 @@ async def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
         lng = geocode_data["results"][0]["geometry"]["location"]["lng"]
         logging.info(f"Successfully geocoded to: {lat}, {lng}")
 
-            # Step 4: Use Places API to find nearby competitors
+
         places_url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1500&type=establishment&keyword={corrected_business_idea}&key={settings.google_maps_api_key}"
         logging.info(f"Fetching competitors with URL: {places_url}")
         try:
@@ -325,25 +325,25 @@ async def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
                     f"No competitors found or Places API error: {places_data.get('status')}"
                 )
 
-            # Step 5: Fetch external data for enhanced evaluation
+
         economic_indicator = get_economic_indicator(corrected_location)
 
-            # Step 6: Prepare features for the ML model
+
         features = {
                 "business_idea": corrected_business_idea,
                 "location": corrected_location,
                 "competitors": len(competitors),
-                # "trend_score": trend_score,  # Removed
+
                 "economic_indicator": economic_indicator,
             }
 
-            # Convert features to the format expected by the model
+
         df_features = pd.DataFrame([features])
         df_features_encoded = pd.get_dummies(
                 df_features, columns=["business_idea", "location"], drop_first=True
             )
 
-            # Ensure all model features are present
+
         model_features = model.feature_names_in_
         for feature in model_features:
                 if feature not in df_features_encoded.columns:
@@ -351,18 +351,18 @@ async def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
 
         df_features_encoded = df_features_encoded[model_features]
 
-            # Predict success using the ML model
+
         prediction = model.predict(df_features_encoded)[0]
         rating = "Great" if prediction == 1 else "Bad"
 
-            # Generate explanation
+
         explanation = (
                 f"The business idea '{corrected_business_idea}' in '{corrected_location}' "
                 f"has a predicted success rating of '{rating}'. This is based on current market trends "
                 f"and economic indicators."
             )
 
-            # Step 7: Financial Projections
+
         annual_revenue = estimate_annual_revenue(
                 corrected_business_idea, corrected_location, competitors
             )
@@ -370,11 +370,11 @@ async def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
         operational_expenses = estimate_operational_expenses(
                 corrected_business_idea, corrected_location
             )
-        cost_of_goods_sold = annual_revenue * 0.3  # Assuming COGS is 30% of revenue
+        cost_of_goods_sold = annual_revenue * 0.3  
         p_and_l_statement = generate_p_and_l_statement(
                 annual_revenue, cost_of_goods_sold, operational_expenses
             )
-        break_even_revenue = startup_costs  # Simplified for this example
+        break_even_revenue = startup_costs 
 
         financial_projection = FinancialProjection(
                 revenue=p_and_l_statement["revenue"],
@@ -385,12 +385,12 @@ async def evaluate(request: EvaluationRequest, db: Session = Depends(get_db)):
                 break_even_revenue=break_even_revenue,
             )
 
-            # Step 8: Risk Assessment
+
         risks = identify_potential_risks(corrected_business_idea, corrected_location)
         risk_assessment = assess_risks(risks)
         mitigation_strategies = suggest_mitigation_strategies(risk_assessment)
 
-            # Save evaluation to the database
+
         evaluation = Evaluation(
                 business_idea=corrected_business_idea,
                 location=corrected_location,

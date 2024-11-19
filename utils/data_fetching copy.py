@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import logging
 
-# Load environment variables
+
 load_dotenv()
 
 API_NINJAS_KEY = os.getenv('API_NINJAS_KEY')
@@ -11,7 +11,8 @@ API_NINJAS_KEY = os.getenv('API_NINJAS_KEY')
 if not API_NINJAS_KEY:
     raise ValueError("API_NINJAS_KEY environment variable is not set.")
 
-# Function to fetch population data using the API Ninjas City API
+
+
 def get_population_data(location):
     headers = {
         "X-Api-Key": API_NINJAS_KEY
@@ -21,7 +22,7 @@ def get_population_data(location):
 
     params = {
         "name": city,
-        "country": "US",  # Assuming only US cities for now
+        "country": "US",  
         "limit": 1
     }
 
@@ -47,7 +48,7 @@ def get_population_data(location):
         logging.error(f"Failed to parse population data: {e}")
         return None
 
-# Other functions like `get_average_spending` and `get_industry_interest_rate` remain unchanged
+
 
 def get_average_spending(industry):
     """
@@ -55,13 +56,13 @@ def get_average_spending(industry):
     This function currently uses placeholder values and should be replaced
     with actual data fetching logic.
     """
-    # Placeholder values; replace with actual data fetching
+
     industry_spending = {
-        'Fitness Center': 600,  # Average annual spending per customer
+        'Fitness Center': 600, 
         'Coffee Shop': 400,
-        # Add more industries
+        
     }
-    return industry_spending.get(industry, 500)  # Default value
+    return industry_spending.get(industry, 500)  
 
 def get_industry_interest_rate(industry):
     """
@@ -69,10 +70,10 @@ def get_industry_interest_rate(industry):
     This function currently uses placeholder values and should be replaced
     with actual data fetching logic.
     """
-    # Placeholder values
+
     interest_rates = {
-        'Fitness Center': 0.2,  # 20% of the population
+        'Fitness Center': 0.2,  
         'Coffee Shop': 0.5,
-        # Add more industries
+
     }
-    return interest_rates.get(industry, 0.3)  # Default value
+    return interest_rates.get(industry, 0.3)  
