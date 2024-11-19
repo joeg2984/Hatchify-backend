@@ -16,13 +16,15 @@ class Settings(BaseSettings):
     database_url: str = Field(..., env='DATABASE_URL')
     api_ninjas_key: str = Field(..., env='API_NINJAS_KEY')
     exploding_topics_api_key: str = Field(..., env='EXPLODING_TOPICS_API_KEY')
+    vite_openai_api_key: str = Field(..., env='VITE_OPENAI_API_KEY')
 
     class Config:
         env_file = ".env"
         env_file_encoding = 'utf-8'
-        extra = 'forbid'  # Ensures no extra fields are present
+        extra = 'forbid'  
+        
 
-# Initialize settings
+
 try:
     settings = Settings()
     logger.info("Configuration settings loaded successfully.")

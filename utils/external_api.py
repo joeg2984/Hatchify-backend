@@ -6,13 +6,11 @@ from typing import Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 
-API_KEY = "EXPLODING_TOPICS_API_KEY"  #
-
+API_KEY = "EXPLODING_TOPICS_API_KEY"  # Ideally, load this from environment variables
 
 def fetch_trend_data(topic: str, region: Optional[str] = None) -> Dict[str, Any]:
    
-    base_url = "https://api.explodingtopics.com/v1/topics"  
-    
+    base_url = "https://api.explodingtopics.com/v1/topics"  # Hypothetical endpoint
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
@@ -47,9 +45,9 @@ def get_economic_indicator(location: str) -> float:
         'Chicago, IL': 0.7,
         'Houston, TX': 0.65,
         'San Francisco, CA': 0.85
-
+        # Add more mappings as needed
     }
-    return economic_data.get(location, 0.5)
+    return economic_data.get(location, 0.5)  # Default to 0.5
 
 
 

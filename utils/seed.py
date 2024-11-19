@@ -1,7 +1,9 @@
+# backend/seed.py
 from db import SessionLocal, engine, Base
 from models import Location, BusinessIdea
 import logging
 
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -14,6 +16,7 @@ logging.basicConfig(
 def seed_database():
     db = SessionLocal()
     try:
+        # Seed locations
         known_locations = [
             "New York, NY", "Los Angeles, CA", "Chicago, IL",
             "Houston, TX", "Phoenix, AZ", "Philadelphia, PA"
@@ -22,6 +25,7 @@ def seed_database():
             if not db.query(Location).filter_by(name=loc).first():
                 db.add(Location(name=loc))
 
+        # Seed business ideas
         known_business_ideas = [
             "Coffee Shop", "Book Store", "Gym",
             "Bakery", "Fitness Center", "Art Gallery"
